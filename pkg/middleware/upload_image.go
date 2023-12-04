@@ -8,9 +8,9 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func UploadPhoto(next echo.HandlerFunc) echo.HandlerFunc {
+func UploadImage(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		file, err := c.FormFile("photo")
+		file, err := c.FormFile("image")
 
 		if file != nil {
 			if err != nil {
@@ -23,7 +23,7 @@ func UploadPhoto(next echo.HandlerFunc) echo.HandlerFunc {
 			}
 			defer src.Close()
 
-			tempFile, err := ioutil.TempFile("uploads/photo", "image-photo-*.png")
+			tempFile, err := ioutil.TempFile("uploads/image", "image-*.png")
 			if err != nil {
 				return c.JSON(http.StatusBadRequest, err)
 			}
@@ -37,11 +37,11 @@ func UploadPhoto(next echo.HandlerFunc) echo.HandlerFunc {
 			filename := data[14:] // split uploads/
 			// fmt.Println("photo", filename)
 
-			c.Set("dataPhoto", filename)
+			c.Set("dataImage", filename)
 			return next(c)
 		}
 
-		c.Set("dataPhoto", "")
+		c.Set("dataImage", "")
 		return next(c)
 	}
 }

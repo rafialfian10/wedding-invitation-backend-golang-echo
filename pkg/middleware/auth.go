@@ -15,7 +15,6 @@ type Result struct {
 	Message string      `json:"message"`
 }
 
-// function Auth berfungsi untuk validasi token(user baru dapat melakukan CRUD setelah memasukkan token)
 func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		token := c.Request().Header.Get("Authorization")
