@@ -1,18 +1,21 @@
 package handlers
 
 import (
+	"context"
+	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 	dto "wedding/dto"
 	"wedding/models"
 	"wedding/repositories"
 
+	"github.com/cloudinary/cloudinary-go"
+	"github.com/cloudinary/cloudinary-go/api/uploader"
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
 )
-
-var path_photo = "http://localhost:5000/uploads/photo/"
 
 type handlerUser struct {
 	UserRepository repositories.UserRepository
@@ -29,7 +32,7 @@ func (h *handlerUser) FindUsers(c echo.Context) error {
 	}
 
 	for i, user := range users {
-		users[i].Photo = path_photo + user.Photo
+		users[i].Photo = user.Photo
 	}
 
 	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: users})
@@ -43,8 +46,6 @@ func (h *handlerUser) GetUser(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
 	}
-
-	user.Photo = path_photo + user.Photo
 
 	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: ConvertUserResponse(user)})
 }
@@ -77,10 +78,32 @@ func (h *handlerUser) CreateUser(c echo.Context) error {
 
 func (h *handlerUser) UpdateUser(c echo.Context) error {
 	var err error
-	dataPhoto := c.Get("dataPhoto").(string)
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
+	}
+
+	dataContext := c.Get("dataPhoto")
+	if dataContext == nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "dataPhoto is nil"})
+	}
+
+	filepath, ok := dataContext.(string)
+	if !ok {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "dataPhoto is not a string"})
+	}
+
+	// cloudinary
+	var ctx = context.Background()
+	var CLOUD_NAME = os.Getenv("CLOUD_NAME")
+	var API_KEY = os.Getenv("API_KEY")
+	var API_SECRET = os.Getenv("API_SECRET")
+
+	cld, _ := cloudinary.NewFromParams(CLOUD_NAME, API_KEY, API_SECRET)
+	resp, err := cld.Upload.Upload(ctx, filepath, uploader.UploadParams{Folder: "wedding"})
+
+	if err != nil {
+		fmt.Println(err.Error())
 	}
 
 	request := dto.UpdateUserRequest{
@@ -90,7 +113,7 @@ func (h *handlerUser) UpdateUser(c echo.Context) error {
 		Gender:   c.FormValue("gender"),
 		Phone:    c.FormValue("phone"),
 		Address:  c.FormValue("address"),
-		Photo:    dataPhoto,
+		Photo:    resp.SecureURL,
 	}
 
 	validation := validator.New()
@@ -166,7 +189,6 @@ func (h *handlerUser) GetProfile(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
 	}
 
-	profile.Photo = path_photo + profile.Photo
 	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: ConvertUserResponse(profile)})
 }
 

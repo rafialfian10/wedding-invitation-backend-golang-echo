@@ -89,8 +89,8 @@ func (h *handlerContent) UpdateContent(c echo.Context) error {
 	custom, _ := strconv.ParseBool(c.FormValue("custom"))
 
 	request := dto.UpdateContentRequest{
-		Name:        c.FormValue("caption"),
-		Href:        c.FormValue("title"),
+		Name:        c.FormValue("name"),
+		Href:        c.FormValue("href"),
 		Price:       price,
 		Description: c.FormValue("description"),
 		MostPopuler: mostPopuler,

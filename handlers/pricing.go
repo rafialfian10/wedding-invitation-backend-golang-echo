@@ -1,18 +1,23 @@
 package handlers
 
 import (
+	"context"
+	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 	dto "wedding/dto"
 	"wedding/models"
 	"wedding/repositories"
 
+	"github.com/cloudinary/cloudinary-go"
+	"github.com/cloudinary/cloudinary-go/api/uploader"
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
 )
 
-var path_image = "http://localhost:5000/uploads/image/"
+// var path_image = "http://localhost:5000/uploads/image/"
 
 type handlerPricing struct {
 	PricingRepository repositories.PricingRepository
@@ -23,16 +28,16 @@ func HandlerPricing(PricingRepository repositories.PricingRepository) *handlerPr
 }
 
 func (h *handlerPricing) FindPricings(c echo.Context) error {
-	contents, err := h.PricingRepository.FindPricings()
+	pricings, err := h.PricingRepository.FindPricings()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
 	}
 
-	for i, content := range contents {
-		contents[i].Image = path_image + content.Image
+	for i, pricing := range pricings {
+		pricings[i].Image = pricing.Image
 	}
 
-	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: ConvertMultiplePricingResponse(contents)})
+	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: ConvertMultiplePricingResponse(pricings)})
 }
 
 func (h *handlerPricing) GetPricing(c echo.Context) error {
@@ -49,14 +54,34 @@ func (h *handlerPricing) GetPricing(c echo.Context) error {
 
 func (h *handlerPricing) CreatePricing(c echo.Context) error {
 	var err error
-	dataImage := c.Get("dataImage").(string)
-	// fmt.Println("this is data file", dataImage)
+
+	dataContext := c.Get("dataImage")
+	if dataContext == nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "dataImage is nil"})
+	}
+
+	filepath, ok := dataContext.(string)
+	if !ok {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "dataImage is not a string"})
+	}
+
+	var ctx = context.Background()
+	var CLOUD_NAME = os.Getenv("CLOUD_NAME")
+	var API_KEY = os.Getenv("API_KEY")
+	var API_SECRET = os.Getenv("API_SECRET")
+
+	cld, _ := cloudinary.NewFromParams(CLOUD_NAME, API_KEY, API_SECRET)
+	resp, err := cld.Upload.Upload(ctx, filepath, uploader.UploadParams{Folder: "wedding"})
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 
 	request := dto.CreatePricingRequest{
 		Caption:     c.FormValue("caption"),
 		Title:       c.FormValue("title"),
 		Description: c.FormValue("description"),
-		Image:       dataImage,
+		Image:       resp.SecureURL,
 	}
 
 	validation := validator.New()
@@ -88,13 +113,35 @@ func (h *handlerPricing) CreatePricing(c echo.Context) error {
 
 func (h *handlerPricing) UpdatePricing(c echo.Context) error {
 	var err error
-	dataImage := c.Get("dataImage").(string)
+
+	dataContext := c.Get("dataPhoto")
+	if dataContext == nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "dataPhoto is nil"})
+	}
+
+	filepath, ok := dataContext.(string)
+	if !ok {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "dataPhoto is not a string"})
+	}
+
+	// cloudinary
+	var ctx = context.Background()
+	var CLOUD_NAME = os.Getenv("CLOUD_NAME")
+	var API_KEY = os.Getenv("API_KEY")
+	var API_SECRET = os.Getenv("API_SECRET")
+
+	cld, _ := cloudinary.NewFromParams(CLOUD_NAME, API_KEY, API_SECRET)
+	resp, err := cld.Upload.Upload(ctx, filepath, uploader.UploadParams{Folder: "wedding"})
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 
 	request := dto.UpdatePricingRequest{
 		Caption:     c.FormValue("caption"),
 		Title:       c.FormValue("title"),
 		Description: c.FormValue("description"),
-		Image:       dataImage,
+		Image:       resp.SecureURL,
 	}
 
 	validation := validator.New()
