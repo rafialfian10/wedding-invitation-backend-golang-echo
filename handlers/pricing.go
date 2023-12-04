@@ -203,7 +203,7 @@ func convertPricingResponse(pricing models.Pricing) models.PricingResponse {
 	result.Description = pricing.Description
 	result.Image = pricing.Image
 	result.ContentId = pricing.ContentId
-	result.Content = pricing.Content
+	// result.Content = pricing.Content
 	result.UserID = pricing.UserID
 	result.User = pricing.User
 
@@ -221,9 +221,9 @@ func ConvertMultiplePricingResponse(pricings []models.Pricing) []models.PricingR
 			Description: pricing.Description,
 			Image:       pricing.Image,
 			ContentId:   pricing.ContentId,
-			Content:     pricing.Content,
-			UserID:      pricing.UserID,
-			User:        pricing.User,
+			// Content:     pricing.Content,
+			UserID: pricing.UserID,
+			User:   pricing.User,
 		}
 
 		result = append(result, pricingResponse)
