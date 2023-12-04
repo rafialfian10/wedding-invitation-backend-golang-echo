@@ -44,7 +44,7 @@ func (h *handlerFeature) CreateFeature(c echo.Context) error {
 	var err error
 
 	request := dto.CreateFeatureRequest{
-		Description: c.FormValue("description"),
+		Feature: c.FormValue("feature"),
 	}
 
 	validation := validator.New()
@@ -54,7 +54,7 @@ func (h *handlerFeature) CreateFeature(c echo.Context) error {
 	}
 
 	feature := models.Feature{
-		Description: request.Description,
+		Feature: request.Feature,
 	}
 
 	feature, err = h.FeatureRepository.CreateFeature(feature)
@@ -71,7 +71,7 @@ func (h *handlerFeature) UpdateFeature(c echo.Context) error {
 	var err error
 
 	request := dto.UpdateFeatureRequest{
-		Description: c.FormValue("description"),
+		Feature: c.FormValue("feature"),
 	}
 
 	validation := validator.New()
@@ -86,8 +86,8 @@ func (h *handlerFeature) UpdateFeature(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
 	}
 
-	if request.Description != "" {
-		feature.Description = request.Description
+	if request.Feature != "" {
+		feature.Feature = request.Feature
 	}
 
 	data, err := h.FeatureRepository.UpdateFeature(feature)
@@ -117,7 +117,7 @@ func (h *handlerFeature) DeleteFeature(c echo.Context) error {
 func convertFeatureResponse(feature models.Feature) models.FeatureResponse {
 	var result models.FeatureResponse
 	result.ID = feature.ID
-	result.Description = feature.Description
+	result.Feature = feature.Feature
 
 	return result
 }
@@ -127,8 +127,8 @@ func ConvertMultipleFeatureResponse(features []models.Feature) []models.FeatureR
 
 	for _, feature := range features {
 		featureResponse := models.FeatureResponse{
-			ID:          feature.ID,
-			Description: feature.Description,
+			ID:      feature.ID,
+			Feature: feature.Feature,
 		}
 
 		result = append(result, featureResponse)

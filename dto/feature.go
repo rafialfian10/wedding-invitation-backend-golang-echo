@@ -1,9 +1,9 @@
 package dto
 
 type CreateFeatureRequest struct {
-	Description string `json:"description" form:"description"`
+	Feature string `json:"feature" form:"feature"`
 }
 
 type UpdateFeatureRequest struct {
-	Description string `json:"description" form:"description"`
+	Feature string `json:"feature" form:"feature"`
 }

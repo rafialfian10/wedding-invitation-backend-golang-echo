@@ -5,6 +5,8 @@ type CreateContentRequest struct {
 	Href        string `json:"href" form:"href"`
 	Price       int    `json:"price" form:"price"`
 	Description string `json:"description" form:"description"`
+	MostPopuler bool   `json:"most_populer" form:"most_populer" validate:"required"`
+	Custom      bool   `json:"custom" form:"custom" validate:"required"`
 }
 
 type UpdateContentRequest struct {
@@ -12,4 +14,6 @@ type UpdateContentRequest struct {
 	Href        string `json:"href" form:"href"`
 	Price       int    `json:"price" form:"price"`
 	Description string `json:"description" form:"description"`
+	MostPopuler bool   `json:"most_populer" form:"most_populer"`
+	Custom      bool   `json:"custom" form:"custom"`
 }

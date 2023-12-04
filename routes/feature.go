@@ -14,8 +14,8 @@ func FeatureRoutes(e *echo.Group) {
 	h := handlers.HandlerFeature(featureRepository)
 
 	e.GET("/features", h.FindFeatures)
-	e.GET("/featyre/:id", h.GetFeature)
-	e.POST("/featyre", middleware.Auth(h.CreateFeature))
-	e.PATCH("/featyre/:id", middleware.Auth(h.UpdateFeature))
-	e.DELETE("/featyre/:id", middleware.Auth(h.DeleteFeature))
+	e.GET("/feature/:id", h.GetFeature)
+	e.POST("/feature", middleware.Auth(h.CreateFeature))
+	e.PATCH("/feature/:id", middleware.Auth(h.UpdateFeature))
+	e.DELETE("/feature/:id", middleware.Auth(h.DeleteFeature))
 }

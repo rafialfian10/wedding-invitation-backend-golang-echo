@@ -44,12 +44,16 @@ func (h *handlerContent) CreateContent(c echo.Context) error {
 	var err error
 
 	price, _ := strconv.Atoi(c.FormValue("price"))
+	mostPopuler, _ := strconv.ParseBool(c.FormValue("most_populer"))
+	custom, _ := strconv.ParseBool(c.FormValue("custom"))
 
 	request := dto.CreateContentRequest{
 		Name:        c.FormValue("name"),
 		Href:        c.FormValue("href"),
 		Price:       price,
 		Description: c.FormValue("description"),
+		MostPopuler: mostPopuler,
+		Custom:      custom,
 	}
 
 	validation := validator.New()
@@ -63,6 +67,8 @@ func (h *handlerContent) CreateContent(c echo.Context) error {
 		Href:        request.Href,
 		Price:       request.Price,
 		Description: request.Description,
+		MostPopuler: false,
+		Custom:      false,
 	}
 
 	content, err = h.ContentRepository.CreateContent(content)
@@ -79,12 +85,16 @@ func (h *handlerContent) UpdateContent(c echo.Context) error {
 	var err error
 
 	price, _ := strconv.Atoi(c.FormValue("price"))
+	mostPopuler, _ := strconv.ParseBool(c.FormValue("most_populer"))
+	custom, _ := strconv.ParseBool(c.FormValue("custom"))
 
 	request := dto.UpdateContentRequest{
 		Name:        c.FormValue("caption"),
 		Href:        c.FormValue("title"),
 		Price:       price,
 		Description: c.FormValue("description"),
+		MostPopuler: mostPopuler,
+		Custom:      custom,
 	}
 
 	validation := validator.New()
@@ -114,6 +124,9 @@ func (h *handlerContent) UpdateContent(c echo.Context) error {
 	if request.Description != "" {
 		content.Description = request.Description
 	}
+
+	content.MostPopuler = request.MostPopuler
+	content.Custom = request.Custom
 
 	data, err := h.ContentRepository.UpdateContent(content)
 	if err != nil {
@@ -146,6 +159,8 @@ func convertContentResponse(content models.Content) models.ContentResponse {
 	result.Href = content.Href
 	result.Price = content.Price
 	result.Description = content.Description
+	result.MostPopuler = content.MostPopuler
+	result.Custom = content.Custom
 
 	return result
 }
@@ -160,10 +175,10 @@ func ConvertMultipleContentResponse(contents []models.Content) []models.ContentR
 			Href:        content.Href,
 			Price:       content.Price,
 			Description: content.Description,
+			MostPopuler: content.MostPopuler,
+			Custom:      content.Custom,
 		}
-
 		result = append(result, contentResponse)
 	}
-
 	return result
 }

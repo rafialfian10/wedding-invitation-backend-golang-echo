@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 	dto "wedding/dto"
@@ -53,27 +52,10 @@ func (h *handlerPricing) CreatePricing(c echo.Context) error {
 	dataImage := c.Get("dataImage").(string)
 	// fmt.Println("this is data file", dataImage)
 
-	contentIdString := c.FormValue("content_id")
-
-	if contentIdString == "" {
-		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "Error: content_id form value is missing."})
-	}
-
-	var categoriesId []int
-	err = json.Unmarshal([]byte(contentIdString), &categoriesId)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
-	}
-
-	if len(categoriesId) == 0 {
-		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "Error: content_id form value is missing."})
-	}
-
 	request := dto.CreatePricingRequest{
 		Caption:     c.FormValue("caption"),
 		Title:       c.FormValue("title"),
 		Description: c.FormValue("description"),
-		ContentID:   categoriesId,
 		Image:       dataImage,
 	}
 
@@ -87,9 +69,8 @@ func (h *handlerPricing) CreatePricing(c echo.Context) error {
 	userId := userLogin.(jwt.MapClaims)["id"].(float64)
 
 	pricing := models.Pricing{
-		Title:   request.Title,
-		Caption: request.Caption,
-		// Content:     categories,
+		Title:       request.Title,
+		Caption:     request.Caption,
 		Description: request.Description,
 		Image:       request.Image,
 		UserID:      int(userId),
@@ -109,23 +90,11 @@ func (h *handlerPricing) UpdatePricing(c echo.Context) error {
 	var err error
 	dataImage := c.Get("dataImage").(string)
 
-	var contentId []int
-	contentIdString := c.FormValue("content_id")
-	err = json.Unmarshal([]byte(contentIdString), &contentId)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
-	}
-
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
-	}
-
 	request := dto.UpdatePricingRequest{
 		Caption:     c.FormValue("caption"),
 		Title:       c.FormValue("title"),
 		Description: c.FormValue("description"),
 		Image:       dataImage,
-		ContentID:   contentId,
 	}
 
 	validation := validator.New()
@@ -202,8 +171,6 @@ func convertPricingResponse(pricing models.Pricing) models.PricingResponse {
 	result.Title = pricing.Title
 	result.Description = pricing.Description
 	result.Image = pricing.Image
-	result.ContentId = pricing.ContentId
-	// result.Content = pricing.Content
 	result.UserID = pricing.UserID
 	result.User = pricing.User
 
@@ -220,14 +187,10 @@ func ConvertMultiplePricingResponse(pricings []models.Pricing) []models.PricingR
 			Title:       pricing.Title,
 			Description: pricing.Description,
 			Image:       pricing.Image,
-			ContentId:   pricing.ContentId,
-			// Content:     pricing.Content,
-			UserID: pricing.UserID,
-			User:   pricing.User,
+			UserID:      pricing.UserID,
+			User:        pricing.User,
 		}
-
 		result = append(result, pricingResponse)
 	}
-
 	return result
 }
