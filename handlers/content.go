@@ -63,12 +63,12 @@ func (h *handlerContent) CreateContent(c echo.Context) error {
 	}
 
 	content := models.Content{
-		Name:        request.Name,
-		Href:        request.Href,
-		Price:       request.Price,
-		Description: request.Description,
-		MostPopuler: false,
-		Custom:      false,
+		Name: request.Name,
+		// Href:        request.Href,
+		// Price:       request.Price,
+		// Description: request.Description,
+		// MostPopuler: false,
+		// Custom:      false,
 	}
 
 	content, err = h.ContentRepository.CreateContent(content)
@@ -113,20 +113,20 @@ func (h *handlerContent) UpdateContent(c echo.Context) error {
 		content.Name = request.Name
 	}
 
-	if request.Href != "" {
-		content.Href = request.Href
-	}
+	// if request.Href != "" {
+	// 	content.Href = request.Href
+	// }
 
-	if request.Price != 0 {
-		content.Price = request.Price
-	}
+	// if request.Price != 0 {
+	// 	content.Price = request.Price
+	// }
 
-	if request.Description != "" {
-		content.Description = request.Description
-	}
+	// if request.Description != "" {
+	// 	content.Description = request.Description
+	// }
 
-	content.MostPopuler = request.MostPopuler
-	content.Custom = request.Custom
+	// content.MostPopuler = request.MostPopuler
+	// content.Custom = request.Custom
 
 	data, err := h.ContentRepository.UpdateContent(content)
 	if err != nil {
@@ -156,11 +156,11 @@ func convertContentResponse(content models.Content) models.ContentResponse {
 	var result models.ContentResponse
 	result.ID = content.ID
 	result.Name = content.Name
-	result.Href = content.Href
-	result.Price = content.Price
-	result.Description = content.Description
-	result.MostPopuler = content.MostPopuler
-	result.Custom = content.Custom
+	// result.Href = content.Href
+	// result.Price = content.Price
+	// result.Description = content.Description
+	// result.MostPopuler = content.MostPopuler
+	// result.Custom = content.Custom
 
 	return result
 }
@@ -170,13 +170,13 @@ func ConvertMultipleContentResponse(contents []models.Content) []models.ContentR
 
 	for _, content := range contents {
 		contentResponse := models.ContentResponse{
-			ID:          content.ID,
-			Name:        content.Name,
-			Href:        content.Href,
-			Price:       content.Price,
-			Description: content.Description,
-			MostPopuler: content.MostPopuler,
-			Custom:      content.Custom,
+			ID:   content.ID,
+			Name: content.Name,
+			// Href:        content.Href,
+			// Price:       content.Price,
+			// Description: content.Description,
+			// MostPopuler: content.MostPopuler,
+			// Custom:      content.Custom,
 		}
 		result = append(result, contentResponse)
 	}

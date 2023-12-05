@@ -13,7 +13,6 @@ import (
 	"github.com/cloudinary/cloudinary-go"
 	"github.com/cloudinary/cloudinary-go/api/uploader"
 	"github.com/go-playground/validator/v10"
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
 )
 
@@ -82,6 +81,7 @@ func (h *handlerPricing) CreatePricing(c echo.Context) error {
 		Title:       c.FormValue("title"),
 		Description: c.FormValue("description"),
 		Image:       resp.SecureURL,
+		Contents:    []string{c.FormValue("contents")},
 	}
 
 	validation := validator.New()
@@ -90,15 +90,22 @@ func (h *handlerPricing) CreatePricing(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{Status: http.StatusInternalServerError, Message: err.Error()})
 	}
 
-	userLogin := c.Get("userLogin")
-	userId := userLogin.(jwt.MapClaims)["id"].(float64)
+	// userLogin := c.Get("userLogin")
+	// userId := userLogin.(jwt.MapClaims)["id"].(float64)
 
 	pricing := models.Pricing{
 		Title:       request.Title,
 		Caption:     request.Caption,
 		Description: request.Description,
 		Image:       request.Image,
-		UserID:      int(userId),
+		// UserID:      int(userId),
+	}
+
+	for _, content := range request.Contents {
+		contentData := models.ContentResponse{
+			Name: content,
+		}
+		pricing.Content = append(pricing.Content, contentData)
 	}
 
 	pricing, err = h.PricingRepository.CreatePricing(pricing)
@@ -218,8 +225,9 @@ func convertPricingResponse(pricing models.Pricing) models.PricingResponse {
 	result.Title = pricing.Title
 	result.Description = pricing.Description
 	result.Image = pricing.Image
-	result.UserID = pricing.UserID
-	result.User = pricing.User
+	result.Content = pricing.Content
+	// result.UserID = pricing.UserID
+	// result.User = pricing.User
 
 	return result
 }
@@ -234,8 +242,9 @@ func ConvertMultiplePricingResponse(pricings []models.Pricing) []models.PricingR
 			Title:       pricing.Title,
 			Description: pricing.Description,
 			Image:       pricing.Image,
-			UserID:      pricing.UserID,
-			User:        pricing.User,
+			Content:     pricing.Content,
+			// UserID:      pricing.UserID,
+			// User:        pricing.User,
 		}
 		result = append(result, pricingResponse)
 	}

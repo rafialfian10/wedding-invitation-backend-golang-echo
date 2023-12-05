@@ -109,11 +109,11 @@ func (h *handlerUser) UpdateUser(c echo.Context) error {
 	request := dto.UpdateUserRequest{
 		Username: c.FormValue("username"),
 		Email:    c.FormValue("email"),
-		Password: c.FormValue("password"),
-		Gender:   c.FormValue("gender"),
-		Phone:    c.FormValue("phone"),
-		Address:  c.FormValue("address"),
-		Photo:    resp.SecureURL,
+		// Password: c.FormValue("password"),
+		Gender:  c.FormValue("gender"),
+		Phone:   c.FormValue("phone"),
+		Address: c.FormValue("address"),
+		Photo:   resp.SecureURL,
 	}
 
 	validation := validator.New()
@@ -137,9 +137,9 @@ func (h *handlerUser) UpdateUser(c echo.Context) error {
 		user.Email = request.Email
 	}
 
-	if request.Password != "" {
-		user.Password = request.Password
-	}
+	// if request.Password != "" {
+	// 	user.Password = request.Password
+	// }
 
 	if request.Gender != "" {
 		user.Gender = request.Gender
