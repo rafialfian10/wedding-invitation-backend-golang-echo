@@ -37,7 +37,7 @@ func (h *handlerContent) GetContent(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: convertContentResponse(content)})
+	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: ConvertContentResponse(content)})
 }
 
 func (h *handlerContent) CreateContent(c echo.Context) error {
@@ -78,7 +78,7 @@ func (h *handlerContent) CreateContent(c echo.Context) error {
 
 	content, _ = h.ContentRepository.GetContent(content.ID)
 
-	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: convertContentResponse(content)})
+	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: ConvertContentResponse(content)})
 }
 
 func (h *handlerContent) UpdateContent(c echo.Context) error {
@@ -149,10 +149,10 @@ func (h *handlerContent) DeleteContent(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{Status: http.StatusInternalServerError, Message: err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: convertContentResponse(data)})
+	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: ConvertContentResponse(data)})
 }
 
-func convertContentResponse(content models.Content) models.ContentResponse {
+func ConvertContentResponse(content models.Content) models.ContentResponse {
 	var result models.ContentResponse
 	result.ID = content.ID
 	result.Name = content.Name

@@ -37,7 +37,7 @@ func (h *handlerFeature) GetFeature(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: convertFeatureResponse(feature)})
+	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: ConvertFeatureResponse(feature)})
 }
 
 func (h *handlerFeature) CreateFeature(c echo.Context) error {
@@ -65,7 +65,7 @@ func (h *handlerFeature) CreateFeature(c echo.Context) error {
 
 	feature, _ = h.FeatureRepository.GetFeature(feature.ID)
 
-	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: convertFeatureResponse(feature)})
+	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: ConvertFeatureResponse(feature)})
 }
 
 func (h *handlerFeature) UpdateFeature(c echo.Context) error {
@@ -112,10 +112,10 @@ func (h *handlerFeature) DeleteFeature(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{Status: http.StatusInternalServerError, Message: err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: convertFeatureResponse(data)})
+	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: ConvertFeatureResponse(data)})
 }
 
-func convertFeatureResponse(feature models.Feature) models.FeatureResponse {
+func ConvertFeatureResponse(feature models.Feature) models.FeatureResponse {
 	var result models.FeatureResponse
 	result.ID = feature.ID
 	result.Feature = feature.Feature

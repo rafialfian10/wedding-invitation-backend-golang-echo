@@ -48,7 +48,7 @@ func (h *handlerPricing) GetPricing(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: convertPricingResponse(pricing)})
+	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: ConvertPricingResponse(pricing)})
 }
 
 func (h *handlerPricing) CreatePricing(c echo.Context) error {
@@ -217,7 +217,7 @@ func (h *handlerPricing) DeletePricing(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{Status: http.StatusInternalServerError, Message: err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: convertPricingResponse(data)})
+	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: ConvertPricingResponse(data)})
 }
 
 func (h *handlerPricing) DeleteImage(c echo.Context) error {
@@ -232,10 +232,10 @@ func (h *handlerPricing) DeleteImage(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: convertPricingResponse(pricing)})
+	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: ConvertPricingResponse(pricing)})
 }
 
-func convertPricingResponse(pricing models.Pricing) models.PricingResponse {
+func ConvertPricingResponse(pricing models.Pricing) models.PricingResponse {
 	var result models.PricingResponse
 	result.ID = pricing.ID
 	result.Caption = pricing.Caption
