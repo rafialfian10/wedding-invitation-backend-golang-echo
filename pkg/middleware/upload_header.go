@@ -23,7 +23,7 @@ func UploadHeader(next echo.HandlerFunc) echo.HandlerFunc {
 			}
 			defer src.Close()
 
-			tempFile, err := ioutil.TempFile("uploads/header", "header-*.svg")
+			tempFile, err := ioutil.TempFile("uploads/header", "header-*.png")
 			if err != nil {
 				return c.JSON(http.StatusBadRequest, err)
 			}
