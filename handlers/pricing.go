@@ -133,14 +133,14 @@ func (h *handlerPricing) CreatePricing(c echo.Context) error {
 func (h *handlerPricing) UpdatePricing(c echo.Context) error {
 	var err error
 
-	dataContext := c.Get("dataPhoto")
+	dataContext := c.Get("dataImage")
 	if dataContext == nil {
-		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "dataPhoto is nil"})
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "dataImage is nil"})
 	}
 
 	filepath, ok := dataContext.(string)
 	if !ok {
-		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "dataPhoto is not a string"})
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "dataImage is not a string"})
 	}
 
 	// cloudinary

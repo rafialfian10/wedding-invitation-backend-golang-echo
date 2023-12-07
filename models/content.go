@@ -5,7 +5,6 @@ import "time"
 type Content struct {
 	ID          int `json:"id"`
 	PricingID   int
-	Pricing     Pricing
 	Name        string            `json:"name" gorm:"type: varchar(255)"`
 	Href        string            `json:"href" gorm:"type: varchar(255)"`
 	Price       int               `json:"price" gorm:"type: int"`

@@ -113,20 +113,20 @@ func (h *handlerContent) UpdateContent(c echo.Context) error {
 		content.Name = request.Name
 	}
 
-	// if request.Href != "" {
-	// 	content.Href = request.Href
-	// }
+	if request.Href != "" {
+		content.Href = request.Href
+	}
 
-	// if request.Price != 0 {
-	// 	content.Price = request.Price
-	// }
+	if request.Price != 0 {
+		content.Price = request.Price
+	}
 
-	// if request.Description != "" {
-	// 	content.Description = request.Description
-	// }
+	if request.Description != "" {
+		content.Description = request.Description
+	}
 
-	// content.MostPopuler = request.MostPopuler
-	// content.Custom = request.Custom
+	content.MostPopuler = request.MostPopuler
+	content.Custom = request.Custom
 
 	data, err := h.ContentRepository.UpdateContent(content)
 	if err != nil {
