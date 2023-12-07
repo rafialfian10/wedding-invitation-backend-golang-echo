@@ -47,5 +47,5 @@ func (r *repository) DeleteHeader(header models.Header, ID int) (models.Header, 
 }
 
 func (r *repository) DeleteHeaderImage(ID int) error {
-	return r.db.Model(&models.Header{}).Where("id = ?", ID).UpdateColumn("header", gorm.Expr("NULL")).Error
+	return r.db.Model(&models.Header{}).Where("id = ?", ID).UpdateColumn("image", gorm.Expr("NULL")).Error
 }
