@@ -8,11 +8,9 @@ type Pricing struct {
 	Title       string            `json:"title" gorm:"type: varchar(255)"`
 	Description string            `json:"description" gorm:"type: text"`
 	Image       string            `json:"image" gorm:"type: varchar(255)"`
-	Content     []ContentResponse `json:"contents" gorm:"foreignKey:PricingID"`
-	// UserID      int               `json:"user_id" form:"user_id"`
-	// User        UserResponse      `json:"user"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	Content     []ContentResponse `json:"contents" gorm:"foreignKey:PricingID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	CreatedAt   time.Time         `json:"created_at"`
+	UpdatedAt   time.Time         `json:"updated_at"`
 }
 
 type PricingResponse struct {
@@ -22,8 +20,6 @@ type PricingResponse struct {
 	Description string            `json:"description"`
 	Image       string            `json:"image"`
 	Content     []ContentResponse `json:"contents" gorm:"foreignKey:PricingID"`
-	// UserID      int               `json:"user_id" form:"user_id"`
-	// User        UserResponse      `json:"user"`
 }
 
 func (Pricing) TableName() string {

@@ -156,11 +156,12 @@ func convertContentResponse(content models.Content) models.ContentResponse {
 	var result models.ContentResponse
 	result.ID = content.ID
 	result.Name = content.Name
-	// result.Href = content.Href
-	// result.Price = content.Price
-	// result.Description = content.Description
-	// result.MostPopuler = content.MostPopuler
-	// result.Custom = content.Custom
+	result.Href = content.Href
+	result.Price = content.Price
+	result.Description = content.Description
+	result.MostPopuler = content.MostPopuler
+	result.Custom = content.Custom
+	result.Feature = content.Feature
 
 	return result
 }
@@ -170,13 +171,14 @@ func ConvertMultipleContentResponse(contents []models.Content) []models.ContentR
 
 	for _, content := range contents {
 		contentResponse := models.ContentResponse{
-			ID:   content.ID,
-			Name: content.Name,
-			// Href:        content.Href,
-			// Price:       content.Price,
-			// Description: content.Description,
-			// MostPopuler: content.MostPopuler,
-			// Custom:      content.Custom,
+			ID:          content.ID,
+			Name:        content.Name,
+			Href:        content.Href,
+			Price:       content.Price,
+			Description: content.Description,
+			MostPopuler: content.MostPopuler,
+			Custom:      content.Custom,
+			Feature:     content.Feature,
 		}
 		result = append(result, contentResponse)
 	}

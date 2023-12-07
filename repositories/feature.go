@@ -21,20 +21,17 @@ func RepositoryFeature(db *gorm.DB) *repository {
 func (r *repository) FindFeatures() ([]models.Feature, error) {
 	var features []models.Feature
 	err := r.db.Find(&features).Error
-
 	return features, err
 }
 
 func (r *repository) GetFeature(ID int) (models.Feature, error) {
 	var feature models.Feature
 	err := r.db.First(&feature, ID).Error
-
 	return feature, err
 }
 
 func (r *repository) CreateFeature(feature models.Feature) (models.Feature, error) {
 	err := r.db.Create(&feature).Error
-
 	return feature, err
 }
 
@@ -45,6 +42,5 @@ func (r *repository) UpdateFeature(feature models.Feature) (models.Feature, erro
 
 func (r *repository) DeleteFeature(feature models.Feature, ID int) (models.Feature, error) {
 	err := r.db.Raw("DELETE FROM features WHERE id=?", ID).Scan(&feature).Error
-
 	return feature, err
 }

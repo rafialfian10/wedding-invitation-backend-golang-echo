@@ -21,21 +21,18 @@ func RepositoryPricing(db *gorm.DB) *repository {
 
 func (r *repository) FindPricings() ([]models.Pricing, error) {
 	var pricings []models.Pricing
-	err := r.db.Preload("Content").Find(&pricings).Error
-
+	err := r.db.Preload("Content.Feature").Find(&pricings).Error
 	return pricings, err
 }
 
 func (r *repository) GetPricing(ID int) (models.Pricing, error) {
 	var pricing models.Pricing
-	err := r.db.Preload("Content").First(&pricing, ID).Error
-
+	err := r.db.Preload("Content.Feature").First(&pricing, ID).Error
 	return pricing, err
 }
 
 func (r *repository) CreatePricing(pricing models.Pricing) (models.Pricing, error) {
 	err := r.db.Create(&pricing).Error
-
 	return pricing, err
 }
 
@@ -45,9 +42,27 @@ func (r *repository) UpdatePricing(pricing models.Pricing) (models.Pricing, erro
 }
 
 func (r *repository) DeletePricing(pricing models.Pricing, ID int) (models.Pricing, error) {
-	err := r.db.Raw("DELETE FROM pricings WHERE id=?", ID).Scan(&pricing).Error
+	err := r.db.Preload("Content.Feature").First(&pricing, ID).Error
+	if err != nil {
+		return pricing, err
+	}
 
+	// delete related features and content
+	for _, content := range pricing.Content {
+		for _, feature := range content.Feature {
+			if err := r.db.Delete(&feature).Error; err != nil {
+				return pricing, err
+			}
+		}
+		if err := r.db.Delete(&content).Error; err != nil {
+			return pricing, err
+		}
+	}
+
+	// delete pricing
+	err = r.db.Delete(&pricing, ID).Error
 	return pricing, err
+
 }
 
 func (r *repository) DeleteImageByID(ID int) error {

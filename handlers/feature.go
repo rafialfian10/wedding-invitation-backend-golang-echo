@@ -43,8 +43,9 @@ func (h *handlerFeature) GetFeature(c echo.Context) error {
 func (h *handlerFeature) CreateFeature(c echo.Context) error {
 	var err error
 
-	request := dto.CreateFeatureRequest{
-		Feature: c.FormValue("feature"),
+	var request dto.CreateFeatureRequest
+	if err := c.Bind(&request); err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "Invalid request format"})
 	}
 
 	validation := validator.New()

@@ -20,21 +20,18 @@ func RepositoryContent(db *gorm.DB) *repository {
 
 func (r *repository) FindContents() ([]models.Content, error) {
 	var contents []models.Content
-	err := r.db.Find(&contents).Error
-
+	err := r.db.Preload("Feature").Find(&contents).Error
 	return contents, err
 }
 
 func (r *repository) GetContent(ID int) (models.Content, error) {
 	var content models.Content
-	err := r.db.First(&content, ID).Error
-
+	err := r.db.Preload("Feature").First(&content, ID).Error
 	return content, err
 }
 
 func (r *repository) CreateContent(content models.Content) (models.Content, error) {
 	err := r.db.Create(&content).Error
-
 	return content, err
 }
 
@@ -44,7 +41,19 @@ func (r *repository) UpdateContent(content models.Content) (models.Content, erro
 }
 
 func (r *repository) DeleteContent(content models.Content, ID int) (models.Content, error) {
-	err := r.db.Raw("DELETE FROM contents WHERE id=?", ID).Scan(&content).Error
+	err := r.db.Preload("Feature").First(&content, ID).Error
+	if err != nil {
+		return content, err
+	}
 
+	// Delete related features
+	for _, feature := range content.Feature {
+		if err := r.db.Delete(&feature).Error; err != nil {
+			return content, err
+		}
+	}
+
+	// delete content
+	err = r.db.Delete(&content, ID).Error
 	return content, err
 }

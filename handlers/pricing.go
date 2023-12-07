@@ -54,6 +54,11 @@ func (h *handlerPricing) GetPricing(c echo.Context) error {
 func (h *handlerPricing) CreatePricing(c echo.Context) error {
 	var err error
 
+	var request dto.CreatePricingRequest
+	if err := c.Bind(&request); err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "Invalid request format"})
+	}
+
 	dataContext := c.Get("dataImage")
 	if dataContext == nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "dataImage is nil"})
@@ -76,12 +81,10 @@ func (h *handlerPricing) CreatePricing(c echo.Context) error {
 		fmt.Println(err.Error())
 	}
 
-	request := dto.CreatePricingRequest{
-		Caption:     c.FormValue("caption"),
-		Title:       c.FormValue("title"),
-		Description: c.FormValue("description"),
-		Image:       resp.SecureURL,
-		Contents:    []string{c.FormValue("contents")},
+	// if image nil return ""
+	var imageSecureURL string
+	if resp != nil && resp.SecureURL != "" {
+		imageSecureURL = resp.SecureURL
 	}
 
 	validation := validator.New()
@@ -90,21 +93,30 @@ func (h *handlerPricing) CreatePricing(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{Status: http.StatusInternalServerError, Message: err.Error()})
 	}
 
-	// userLogin := c.Get("userLogin")
-	// userId := userLogin.(jwt.MapClaims)["id"].(float64)
-
 	pricing := models.Pricing{
 		Title:       request.Title,
 		Caption:     request.Caption,
 		Description: request.Description,
-		Image:       request.Image,
-		// UserID:      int(userId),
+		Image:       imageSecureURL,
 	}
 
 	for _, content := range request.Contents {
 		contentData := models.ContentResponse{
-			Name: content,
+			Name:        content.Name,
+			Href:        content.Href,
+			Price:       content.Price,
+			Description: content.Description,
+			MostPopuler: false,
+			Custom:      false,
 		}
+
+		for _, feature := range content.Features {
+			featureData := models.FeatureResponse{
+				Feature: feature.Feature,
+			}
+			contentData.Feature = append(contentData.Feature, featureData)
+		}
+
 		pricing.Content = append(pricing.Content, contentData)
 	}
 
@@ -115,7 +127,7 @@ func (h *handlerPricing) CreatePricing(c echo.Context) error {
 
 	pricing, _ = h.PricingRepository.GetPricing(pricing.ID)
 
-	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: convertPricingResponse(pricing)})
+	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: pricing})
 }
 
 func (h *handlerPricing) UpdatePricing(c echo.Context) error {
@@ -144,11 +156,16 @@ func (h *handlerPricing) UpdatePricing(c echo.Context) error {
 		fmt.Println(err.Error())
 	}
 
+	var imageSecureURL string
+	if resp != nil && resp.SecureURL != "" {
+		imageSecureURL = resp.SecureURL
+	}
+
 	request := dto.UpdatePricingRequest{
 		Caption:     c.FormValue("caption"),
 		Title:       c.FormValue("title"),
 		Description: c.FormValue("description"),
-		Image:       resp.SecureURL,
+		Image:       imageSecureURL,
 	}
 
 	validation := validator.New()
