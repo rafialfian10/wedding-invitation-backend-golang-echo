@@ -8,4 +8,5 @@ func RouteInit(e *echo.Group) {
 	PricingRoutes(e)
 	ContentRoutes(e)
 	FeatureRoutes(e)
+	HeaderRoutes(e)
 }
