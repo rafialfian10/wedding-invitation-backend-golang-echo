@@ -13,6 +13,7 @@ func RunMigration() {
 		&models.Content{},
 		&models.Feature{},
 		&models.Header{},
+		&models.Navigation{},
 	)
 
 	if err != nil {
