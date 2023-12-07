@@ -12,7 +12,7 @@ type PricingRepository interface {
 	CreatePricing(pricing models.Pricing) (models.Pricing, error)
 	UpdatePricing(pricing models.Pricing) (models.Pricing, error)
 	DeletePricing(pricing models.Pricing, ID int) (models.Pricing, error)
-	DeleteImageByID(ID int) error
+	DeleteImage(ID int) error
 }
 
 func RepositoryPricing(db *gorm.DB) *repository {
@@ -65,6 +65,6 @@ func (r *repository) DeletePricing(pricing models.Pricing, ID int) (models.Prici
 
 }
 
-func (r *repository) DeleteImageByID(ID int) error {
+func (r *repository) DeleteImage(ID int) error {
 	return r.db.Model(&models.Pricing{}).Where("id = ?", ID).UpdateColumn("image", gorm.Expr("NULL")).Error
 }

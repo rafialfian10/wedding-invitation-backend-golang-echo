@@ -18,4 +18,5 @@ func PricingRoutes(e *echo.Group) {
 	e.POST("/pricing", middleware.Auth(middleware.UploadImage(h.CreatePricing)))
 	e.PATCH("/pricing/:id", middleware.Auth(middleware.UploadImage(h.UpdatePricing)))
 	e.DELETE("/pricing/:id", middleware.Auth(h.DeletePricing))
+	e.DELETE("/pricing/:id/image", middleware.Auth(h.DeleteImage))
 }

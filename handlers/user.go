@@ -187,6 +187,21 @@ func (h *handlerUser) GetProfile(c echo.Context) error {
 	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: ConvertUserResponse(profile)})
 }
 
+func (h *handlerUser) DeletePhoto(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	if err := h.UserRepository.DeletePhoto(id); err != nil {
+		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{Status: http.StatusInternalServerError, Message: err.Error()})
+	}
+
+	user, err := h.UserRepository.GetUser(id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: ConvertUserResponse(user)})
+}
+
 func ConvertUserResponse(user models.User) models.UserResponse {
 	return models.UserResponse{
 		ID:       user.ID,

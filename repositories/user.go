@@ -13,6 +13,7 @@ type UserRepository interface {
 	UpdateUser(user models.User) (models.User, error)
 	DeleteUser(user models.User, ID int) (models.User, error)
 	GetProfile(userId int) (models.User, error)
+	DeletePhoto(ID int) error
 }
 
 func RepositoryUser(db *gorm.DB) *repository {
@@ -50,4 +51,8 @@ func (r *repository) GetProfile(userId int) (models.User, error) {
 	var profile models.User
 	err := r.db.First(&profile, userId).Error
 	return profile, err
+}
+
+func (r *repository) DeletePhoto(ID int) error {
+	return r.db.Model(&models.User{}).Where("id = ?", ID).UpdateColumn("photo", gorm.Expr("NULL")).Error
 }

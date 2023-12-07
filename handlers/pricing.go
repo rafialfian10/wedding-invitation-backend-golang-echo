@@ -223,16 +223,16 @@ func (h *handlerPricing) DeletePricing(c echo.Context) error {
 func (h *handlerPricing) DeleteImage(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	if err := h.PricingRepository.DeleteImageByID(id); err != nil {
+	if err := h.PricingRepository.DeleteImage(id); err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{Status: http.StatusInternalServerError, Message: err.Error()})
 	}
 
-	movie, err := h.PricingRepository.GetPricing(id)
+	pricing, err := h.PricingRepository.GetPricing(id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: convertPricingResponse(movie)})
+	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: convertPricingResponse(pricing)})
 }
 
 func convertPricingResponse(pricing models.Pricing) models.PricingResponse {
