@@ -10,4 +10,5 @@ func RouteInit(e *echo.Group) {
 	FeatureRoutes(e)
 	HeaderRoutes(e)
 	NavigationRoutes(e)
+	FooterRoutes(e)
 }
