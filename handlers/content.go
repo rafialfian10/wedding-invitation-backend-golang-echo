@@ -43,17 +43,9 @@ func (h *handlerContent) GetContent(c echo.Context) error {
 func (h *handlerContent) CreateContent(c echo.Context) error {
 	var err error
 
-	price, _ := strconv.Atoi(c.FormValue("price"))
-	mostPopuler, _ := strconv.ParseBool(c.FormValue("most_populer"))
-	custom, _ := strconv.ParseBool(c.FormValue("custom"))
-
-	request := dto.CreateContentRequest{
-		Name:        c.FormValue("name"),
-		Href:        c.FormValue("href"),
-		Price:       price,
-		Description: c.FormValue("description"),
-		MostPopuler: mostPopuler,
-		Custom:      custom,
+	var request dto.CreateContentRequest
+	if err := c.Bind(&request); err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "Invalid request format"})
 	}
 
 	validation := validator.New()
@@ -62,13 +54,17 @@ func (h *handlerContent) CreateContent(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{Status: http.StatusInternalServerError, Message: err.Error()})
 	}
 
+	price, _ := strconv.Atoi(c.FormValue("price"))
+	mostPopuler, _ := strconv.ParseBool(c.FormValue("most_populer"))
+	custom, _ := strconv.ParseBool(c.FormValue("custom"))
+
 	content := models.Content{
 		Name:        request.Name,
 		Href:        request.Href,
-		Price:       request.Price,
+		Price:       price,
 		Description: request.Description,
-		MostPopuler: false,
-		Custom:      false,
+		MostPopuler: mostPopuler,
+		Custom:      custom,
 	}
 
 	content, err = h.ContentRepository.CreateContent(content)

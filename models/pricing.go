@@ -22,6 +22,6 @@ type PricingResponse struct {
 	Content     []ContentResponse `json:"contents" gorm:"foreignKey:PricingID"`
 }
 
-func (Pricing) TableName() string {
+func (PricingResponse) TableName() string {
 	return "pricings"
 }

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	dto "wedding/dto"
@@ -56,25 +55,23 @@ func (h *handlerFooter) CreateFooter(c echo.Context) error {
 	}
 
 	footer := models.Footer{
-		FooterOneHeader:  request.FooterOneHeader,
-		FooterOneContent: request.FooterOneContent,
-		FooterTwoHeader:  request.FooterTwoHeader,
-		// FooterTwoContent:   request.FooterTwoContent,
-		FooterThreeHeader: request.FooterThreeHeader,
-		// FooterThreeContent: request.FooterThreeContent,
-		FooterFourHeader: request.FooterFourHeader,
-		// FooterFourContent:  request.FooterFourContent,
-		FooterFiveHeader: request.FooterFiveHeader,
-		// FooterFiveContent:  request.FooterFiveContent,
-		Copyright: request.Copyright,
+		FooterOneHeader:    request.FooterOneHeader,
+		FooterOneContent:   request.FooterOneContent,
+		FooterTwoHeader:    request.FooterTwoHeader,
+		FooterTwoContent:   request.FooterTwoContent,
+		FooterThreeHeader:  request.FooterThreeHeader,
+		FooterThreeContent: request.FooterThreeContent,
+		FooterFourHeader:   request.FooterFourHeader,
+		FooterFourContent:  request.FooterFourContent,
+		FooterFiveHeader:   request.FooterFiveHeader,
+		FooterFiveContent:  request.FooterFiveContent,
+		Copyright:          request.Copyright,
 	}
 
-	footer.FooterTwoContent = append(footer.FooterTwoContent, request.FooterTwoContent...)
-	footer.FooterThreeContent = append(footer.FooterThreeContent, request.FooterThreeContent...)
-	footer.FooterFourContent = append(footer.FooterFourContent, request.FooterFourContent...)
-	footer.FooterFiveContent = append(footer.FooterFiveContent, request.FooterFiveContent...)
-
-	fmt.Println("xxx ", footer)
+	// footer.FooterTwoContent = append(footer.FooterTwoContent, request.FooterTwoContent...)
+	// footer.FooterThreeContent = append(footer.FooterThreeContent, request.FooterThreeContent...)
+	// footer.FooterFourContent = append(footer.FooterFourContent, request.FooterFourContent...)
+	// footer.FooterFiveContent = append(footer.FooterFiveContent, request.FooterFiveContent...)
 
 	footer, err = h.FooterRepository.CreateFooter(footer)
 	if err != nil {
@@ -90,17 +87,17 @@ func (h *handlerFooter) UpdateFooter(c echo.Context) error {
 	var err error
 
 	request := dto.UpdateFooterRequest{
-		FooterOneHeader:  c.FormValue("footer_one_header"),
-		FooterOneContent: c.FormValue("footer_one_content"),
-		FooterTwoHeader:  c.FormValue("footer_two_header"),
-		// FooterTwoContent:   c.FormValue("footer_two_content"),
-		FooterThreeHeader: c.FormValue("footer_three_header"),
-		// FooterThreeContent: c.FormValue("footer_three_content"),
-		FooterFourHeader: c.FormValue("footer_four_header"),
-		// FooterFourContent:  c.FormValue("footer_four_content"),
-		FooterFiveHeader: c.FormValue("footer_five_header"),
-		// FooterFiveContent:  c.FormValue("footer_five_content"),
-		Copyright: c.FormValue("copyright"),
+		FooterOneHeader:    c.FormValue("footer_one_header"),
+		FooterOneContent:   c.FormValue("footer_one_content"),
+		FooterTwoHeader:    c.FormValue("footer_two_header"),
+		FooterTwoContent:   c.FormValue("footer_two_content"),
+		FooterThreeHeader:  c.FormValue("footer_three_header"),
+		FooterThreeContent: c.FormValue("footer_three_content"),
+		FooterFourHeader:   c.FormValue("footer_four_header"),
+		FooterFourContent:  c.FormValue("footer_four_content"),
+		FooterFiveHeader:   c.FormValue("footer_five_header"),
+		FooterFiveContent:  c.FormValue("footer_five_content"),
+		Copyright:          c.FormValue("copyright"),
 	}
 
 	validation := validator.New()
@@ -127,7 +124,7 @@ func (h *handlerFooter) UpdateFooter(c echo.Context) error {
 		footer.FooterTwoHeader = request.FooterTwoHeader
 	}
 
-	if len(request.FooterTwoContent) > 0 {
+	if request.FooterTwoContent != "" {
 		footer.FooterTwoContent = request.FooterTwoContent
 	}
 
@@ -135,7 +132,7 @@ func (h *handlerFooter) UpdateFooter(c echo.Context) error {
 		footer.FooterThreeHeader = request.FooterThreeHeader
 	}
 
-	if len(request.FooterThreeContent) > 0 {
+	if request.FooterThreeContent != "" {
 		footer.FooterThreeContent = request.FooterThreeContent
 	}
 
@@ -143,7 +140,7 @@ func (h *handlerFooter) UpdateFooter(c echo.Context) error {
 		footer.FooterFourHeader = request.FooterFourHeader
 	}
 
-	if len(request.FooterFourContent) > 0 {
+	if request.FooterFourContent != "" {
 		footer.FooterFourContent = request.FooterFourContent
 	}
 
@@ -151,9 +148,13 @@ func (h *handlerFooter) UpdateFooter(c echo.Context) error {
 		footer.FooterFiveHeader = request.FooterFiveHeader
 	}
 
-	if len(request.FooterFiveContent) > 0 {
+	if request.FooterFiveContent != "" {
 		footer.FooterFiveContent = request.FooterFiveContent
 	}
+
+	// if len(request.FooterFiveContent) > 0 {
+	// 	footer.FooterFiveContent = request.FooterFiveContent
+	// }
 
 	if request.Copyright != "" {
 		footer.Copyright = request.Copyright

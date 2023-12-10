@@ -149,6 +149,7 @@ func ConvertFagResponse(fag models.Fag) models.FagResponse {
 	result.Caption = fag.Caption
 	result.Title = fag.Title
 	result.Description = fag.Description
+	result.FagContent = fag.FagContent
 
 	return result
 }
@@ -162,6 +163,7 @@ func ConvertMultipleFagResponse(fags []models.Fag) []models.FagResponse {
 			Caption:     fag.Caption,
 			Title:       fag.Title,
 			Description: fag.Description,
+			FagContent:  fag.FagContent,
 		}
 		result = append(result, fagResponse)
 	}

@@ -20,14 +20,14 @@ func RepositoryFag(db *gorm.DB) *repository {
 
 func (r *repository) FindFags() ([]models.Fag, error) {
 	var fags []models.Fag
-	err := r.db.Preload("Fag_Content.Option").Find(&fags).Error
+	err := r.db.Preload("FagContent.Option").Find(&fags).Error
 
 	return fags, err
 }
 
 func (r *repository) GetFag(ID int) (models.Fag, error) {
 	var fag models.Fag
-	err := r.db.Preload("Fag_Content.Option").First(&fag, ID).Error
+	err := r.db.Preload("FagContent.Option").First(&fag, ID).Error
 
 	return fag, err
 }
@@ -45,7 +45,7 @@ func (r *repository) UpdateFag(fag models.Fag) (models.Fag, error) {
 }
 
 func (r *repository) DeleteFag(fag models.Fag, ID int) (models.Fag, error) {
-	err := r.db.Preload("Fag_Content.Option").First(&fag, ID).Error
+	err := r.db.Preload("FagContent.Option").First(&fag, ID).Error
 	if err != nil {
 		return fag, err
 	}
