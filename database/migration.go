@@ -18,6 +18,7 @@ func RunMigration() {
 		&models.FagContent{},
 		&models.Option{},
 		&models.Footer{},
+		&models.Transaction{},
 	)
 
 	if err != nil {

@@ -14,4 +14,5 @@ func RouteInit(e *echo.Group) {
 	FagContentRoutes(e)
 	OptionRoutes(e)
 	FooterRoutes(e)
+	TransactionRoutes(e)
 }
