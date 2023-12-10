@@ -14,6 +14,9 @@ func RunMigration() {
 		&models.Feature{},
 		&models.Header{},
 		&models.Navigation{},
+		&models.Fag{},
+		&models.FagContent{},
+		&models.Option{},
 		&models.Footer{},
 	)
 

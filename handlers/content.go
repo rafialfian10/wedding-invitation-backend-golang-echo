@@ -63,12 +63,12 @@ func (h *handlerContent) CreateContent(c echo.Context) error {
 	}
 
 	content := models.Content{
-		Name: request.Name,
-		// Href:        request.Href,
-		// Price:       request.Price,
-		// Description: request.Description,
-		// MostPopuler: false,
-		// Custom:      false,
+		Name:        request.Name,
+		Href:        request.Href,
+		Price:       request.Price,
+		Description: request.Description,
+		MostPopuler: false,
+		Custom:      false,
 	}
 
 	content, err = h.ContentRepository.CreateContent(content)
