@@ -166,7 +166,6 @@ func (h *handlerAuth) CheckAuth(c echo.Context) error {
 	userId := userLogin.(jwt.MapClaims)["id"].(float64)
 
 	user, _ := h.AuthRepository.CheckAuth(int(userId))
-
 	user.Photo = path_photo_auth + user.Photo
 
 	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: ConvertAuthResponse(user)})
@@ -182,5 +181,6 @@ func ConvertAuthResponse(user models.User) models.UserResponse {
 		Phone:    user.Phone,
 		Address:  user.Address,
 		Photo:    user.Photo,
+		Role:     user.Role,
 	}
 }
